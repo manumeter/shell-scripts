@@ -1,0 +1,38 @@
+#!/bin/bash
+
+GREEN=`echo -e '\033[0;32m'`
+BLUE=`echo -e '\033[1;34m'`
+NORMAL=`echo -e '\033[0m'`
+
+help() {
+	echo "Usage: dict [word]"
+	echo "Translates the given word(s) with dict.leo.org [${GREEN}English${NORMAL} -- ${BLUE}Deutsch${NORMAL}]"
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+[ "$1" == "" ] && help
+
+wget -q -O- "https://dict.leo.org/?search=$1" \
+	| grep -iA 1 "<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"[a-z]*\">.*" \
+	| sed ':a;N;$!ba;s/\(<td[^>]*>\)\n/\1/g' \
+	| sed ':a;N;$!ba;s/\n\([^<]*<\/td>\)/\1/g' \
+	| sed "s/<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"en\">\(.*\)/~g~\1~n~ --i/g" \
+	| sed "s/<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"de\">\(.*\)/~b~\1~n~/g" \
+	| sed ':a;N;$!ba;s/--\n//g' \
+	| sed ':a;N;$!ba;s/\t/ /g' \
+	| sed ':a;N;$!ba;s/<\/*tbody[^>]*>\n*//g' \
+	| sed ':a;N;$!ba;s/<\/*td[^>]*>\n*//g' \
+	| sed ':a;N;$!ba;s/<\/*tr[^>]*>\n*//g' \
+	| sed ':a;N;$!ba;s/<\/*a[^>]*>\n*//g' \
+	| sed ':a;N;$!ba;s/<\/*span[^>]*>\n*//g' \
+	| sed "s/<b>\([^<]*\)<\/b>/\1/g" \
+	| sed "s/<sup>\([^<]*\)<\/sup>/\[\1\]/g" \
+	| sed "s/<sub>\([^<]*\)<\/sub>/\[\1\]/g" \
+	| sed "s/<i>\([^<]*\)<\/i>/\[\1\]/g" \
+	| sed "s/<small>\([^<]*\)<\/small>/\1/g" \
+	| sed ':a;N;$!ba;s/i\n/ /g' \
+	| sed ':a;N;$!ba;s/^\(.*\)\n$/\1/g' \
+	| sed "s/ / /g" | sed "s/ / /g" | sed "s/ [ ]*/ /g" | sed "s/ ~\([gbn]\)~ /~\1~ /g" \
+	| sed "s/~g~/$GREEN/g" | sed "s/~b~/$BLUE/g" | sed "s/~n~/$NORMAL/g"
+	# Note that there are two different kinds of spaces to replace!
