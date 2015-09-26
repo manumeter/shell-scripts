@@ -1,8 +1,24 @@
 #!/bin/bash
 
-GREEN=`echo -e '\033[0;32m'`
-BLUE=`echo -e '\033[1;34m'`
-NORMAL=`echo -e '\033[0m'`
+if [ -t 1 ]
+then
+	COLORS="$(tput colors)"
+	if test -n "$COLORS" && test $COLORS -ge 8
+	then
+		#BOLD="$(tput bold)"
+		#UNDERLINE="$(tput smul)"
+		#STANDOUT="$(tput smso)"
+		NORMAL="$(tput sgr0)"
+		#BLACK="$(tput setaf 0)"
+		#RED="$(tput setaf 1)"
+		GREEN="$(tput setaf 2)"
+		#YELLOW="$(tput setaf 3)"
+		BLUE="$(tput setaf 4)"
+		#MAGENTA="$(tput setaf 5)"
+		#CYAN="$(tput setaf 6)"
+		#WHITE="$(tput setaf 7)"
+	fi
+fi
 
 help() {
 	echo "Usage: dict [word]"
@@ -25,6 +41,7 @@ wget -q -O- "https://dict.leo.org/?search=$1" \
 	| sed ':a;N;$!ba;s/<\/*tr[^>]*>\n*//g' \
 	| sed ':a;N;$!ba;s/<\/*a[^>]*>\n*//g' \
 	| sed ':a;N;$!ba;s/<\/*span[^>]*>\n*//g' \
+	| sed ':a;N;$!ba;s/<\/*br[^>]*>/ /g' \
 	| sed "s/<b>\([^<]*\)<\/b>/\1/g" \
 	| sed "s/<sup>\([^<]*\)<\/sup>/\[\1\]/g" \
 	| sed "s/<sub>\([^<]*\)<\/sub>/\[\1\]/g" \
