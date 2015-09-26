@@ -6,7 +6,7 @@ NORMAL=`echo -e '\033[0m'`
 
 help() {
 	echo "Usage: dict [word]"
-	echo "Translates the given word(s) with dict.leo.org [${GREEN}English${NORMAL} -- ${BLUE}Deutsch${NORMAL}]"
+	echo "Translate the given word(s) with dict.leo.org [${GREEN}English${NORMAL} -- ${BLUE}Deutsch${NORMAL}]"
 	exit 1
 }
 

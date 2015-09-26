@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Copied from https://github.com/tpo/little_shell_scripts
+
+help() {
+   echo "Usage: firefox-sleep"
+   echo "Suspend all Firefox (and plugin) processes"
+   echo "See also: firefox-wake"
+   exit 1
+}
+
+[ "$1" == "--help" ] && help
+
+pkill -STOP -f "(^|/)+iceweasel( |$)+"
+pkill -STOP -f "(^|/)+firefox(-bin)*( |$)+"
+pkill -STOP -f "x-www-browser"
+pkill -STOP -f "(^|/)+plugin-container( |$)+"
