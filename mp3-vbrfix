@@ -1,0 +1,26 @@
+#!/bin/bash
+
+help() {
+	echo "Usage: mp3-vbrfix [file]"
+	echo "Use vbrfix to fix wrong vbr header (e.g. song length) in all .mp3 files (recursively)"
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+
+fix() {
+	echo "$1"
+	vbrfix "$1" "$1" > /dev/null
+}
+
+if [ -d "$1" ]
+then
+	find "$1" -type f -iname "*.mp3" | while read file; do fix "$file"; done
+elif [ -f "$1" ]
+then
+	fix "$1"
+else
+	find . -type f -iname "*.mp3" | while read file; do fix "$file"; done
+fi
+
+rm vbrfix.* > /dev/null 2>&1

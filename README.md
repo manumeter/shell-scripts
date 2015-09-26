@@ -14,6 +14,10 @@
     Wake up all Firefox (and plugin) processes
     See also: firefox-sleep
 
+## mp3-vbrfix --help
+    Usage: mp3-vbrfix [file]
+    Use vbrfix to fix wrong vbr header (e.g. song length) in all .mp3 files (recursively)
+
 ## thunderbird-sleep --help
     Usage: thunderbird-sleep
     Suspend all thunderbird processes
