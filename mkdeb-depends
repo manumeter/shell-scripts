@@ -21,21 +21,22 @@ help() {
 [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] && help
 
 DEB="${1}_${2}_all"
-mkdir -p ".build/$DEB/DEBIAN"
+mkdir -p "/tmp/$DEB/DEBIAN"
 
-echo "Package: $1" >> ".build/$DEB/DEBIAN/control"
-echo "Priority: optional" >> ".build/$DEB/DEBIAN/control"
-echo "Section: dependencies" >> ".build/$DEB/DEBIAN/control"
-echo "Installed-Size: 0" >> ".build/$DEB/DEBIAN/control"
-echo "Maintainer: unknown" >> ".build/$DEB/DEBIAN/control"
-echo "Architecture: all" >> ".build/$DEB/DEBIAN/control"
-echo "Source: none" >> ".build/$DEB/DEBIAN/control"
-echo "Version: $2" >> ".build/$DEB/DEBIAN/control"
-echo "Depends: $3" >> ".build/$DEB/DEBIAN/control"
-echo "Description: dependencies for $1" >> ".build/$DEB/DEBIAN/control"
+echo "Package: $1" >> "/tmp/$DEB/DEBIAN/control"
+echo "Priority: optional" >> "/tmp/$DEB/DEBIAN/control"
+echo "Section: dependencies" >> "/tmp/$DEB/DEBIAN/control"
+echo "Installed-Size: 0" >> "/tmp/$DEB/DEBIAN/control"
+echo "Maintainer: unknown" >> "/tmp/$DEB/DEBIAN/control"
+echo "Architecture: all" >> "/tmp/$DEB/DEBIAN/control"
+echo "Source: none" >> "/tmp/$DEB/DEBIAN/control"
+echo "Version: $2" >> "/tmp/$DEB/DEBIAN/control"
+echo "Depends: $3" >> "/tmp/$DEB/DEBIAN/control"
+echo "Description: dependencies for $1" >> "/tmp/$DEB/DEBIAN/control"
 
-( cd ".build" ; dpkg-deb -b "$DEB" > /dev/null ; mv "${DEB}.deb" .. )
-rm -rf ".build"
+( cd "/tmp" ; dpkg-deb -b "$DEB" > /dev/null )
+mv "/tmp/${DEB}.deb" .
+rm -rf "/tmp/$DEB"
 [ -z "$4" ] || mv "${DEB}.deb" "$4"
 
 DEB="${DEB}.deb"
