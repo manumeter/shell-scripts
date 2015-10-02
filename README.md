@@ -1,5 +1,28 @@
 # Simple Useful Shell Scripts
 
+## calc --help
+    Usage: calc expression
+    Use awk for arithemetic operations
+    
+    Operations: 
+    
+        x + y       Addition
+        x - y       Subtraction
+        - x         Negation
+        x * y       Multiplication
+        x / y       Division
+        x % y       Modulo
+        x ^ y       Exponentiation
+        int(x)      Truncate integer toward zero
+        sqrt(x)     Positive square root
+        exp(x)      Exponentiation e ^ x
+        log(x)      Natural logarithm
+        sin(x)      Sine (in radians)
+        cos(x)      Cosine (in radians)
+        atan2(x, y) Arctangent of x / y (in radians)
+        rand()      Random number between zero and one
+        srand(x)    Random number starting at x
+
 ## dict --help
     Usage: dict [word]
     Translate the given word(s) with dict.leo.org [English -- Deutsch]

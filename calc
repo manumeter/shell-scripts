@@ -1,0 +1,31 @@
+#!/bin/bash
+
+help() {
+   echo "Usage: calc expression"
+   echo "Use awk for arithemetic operations"
+   echo
+   echo "Operations: "
+   echo
+   echo "    x + y       Addition"
+   echo "    x - y       Subtraction"
+   echo "    - x         Negation"
+   echo "    x * y       Multiplication"
+   echo "    x / y       Division"
+   echo "    x % y       Modulo"
+   echo "    x ^ y       Exponentiation"
+   echo "    int(x)      Truncate integer toward zero"
+   echo "    sqrt(x)     Positive square root"
+   echo "    exp(x)      Exponentiation e ^ x"
+   echo "    log(x)      Natural logarithm"
+   echo "    sin(x)      Sine (in radians)"
+   echo "    cos(x)      Cosine (in radians)"
+   echo "    atan2(x, y) Arctangent of x / y (in radians)"
+   echo "    rand()      Random number between zero and one"
+   echo "    srand(x)    Random number starting at x"
+   echo
+   exit 1
+}
+
+[ "$1" == "--help" ] && help
+
+awk "BEGIN{print $1}"
