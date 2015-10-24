@@ -3,10 +3,10 @@
 # Copied from https://github.com/tpo/little_shell_scripts
 
 help() {
-   echo "Usage: firefox-sleep"
-   echo "Suspend all Firefox (and plugin) processes"
-   echo "See also: firefox-wake"
-   exit 1
+	echo "Usage: firefox-sleep"
+	echo "Suspend all Firefox (and plugin) processes"
+	echo "See also: firefox-wake"
+	exit 1
 }
 
 [ "$1" == "--help" ] && help

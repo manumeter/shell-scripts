@@ -3,10 +3,10 @@
 # Copied from https://github.com/tpo/little_shell_scripts
 
 help() {
-   echo "Usage: thunderbird-wake"
-   echo "Wake up all thunderbird processes"
-   echo "See also: thunderbird-sleep"
-   exit 1
+	echo "Usage: thunderbird-wake"
+	echo "Wake up all thunderbird processes"
+	echo "See also: thunderbird-sleep"
+	exit 1
 }
 
 [ "$1" == "--help" ] && help
