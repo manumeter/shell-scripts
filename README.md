@@ -53,6 +53,18 @@
     Usage: mp3-vbrfix [file]
     Use vbrfix to fix wrong vbr header (e.g. song length) in all .mp3 files (recursively)
 
+## mutex-lock --help
+    Usage: mutex-lock [name]
+    Use mkdir (atomicly) to realize mutex on file system level. If no
+    name is specified, a default lock will be used.
+    See also: mutex-unlock
+
+## mutex-unlock --help
+    Usage: mutex-unlock [name]
+    Use mkdir (atomicly) to realize mutex on file system level. If no
+    name is specified, a default lock will be used.
+    See also: mutex-lock
+
 ## thunderbird-sleep --help
     Usage: thunderbird-sleep
     Suspend all thunderbird processes

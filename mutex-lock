@@ -1,0 +1,28 @@
+#!/bin/bash
+
+help() {
+	echo "Usage: mutex-lock [name]"
+	echo "Use mkdir (atomicly) to realize mutex on file system level. If no"
+	echo "name is specified, a default lock will be used."
+	echo "See also: mutex-unlock"
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+
+LOCK="$1"
+[ -z "$LOCK" ] && LOCK="bash-default"
+
+if mkdir "/var/lock/$LOCK" > /dev/null 2>&1; then
+	echo "Lock ${LOCK} obtained."
+	exit 0
+else
+	echo "Waiting for lock ${LOCK}..."
+	while true; do
+		sleep 1
+		if mkdir "/var/lock/$LOCK" > /dev/null 2>&1; then
+			echo "Lock ${LOCK} obtained."
+			exit 0
+		fi
+	done
+fi
