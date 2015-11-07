@@ -1,0 +1,13 @@
+#!/bin/bash
+
+help() {
+	echo "Usage: file-uncrypt file"
+	echo "Use tar and gpg to uncrypt a file"
+	echo "See also: file-crypt"
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+[ -z "$1" ] && help
+
+gpg --no-use-agent -d "$1" | tar xz
