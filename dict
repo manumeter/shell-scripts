@@ -12,8 +12,8 @@ then
 		#BLACK="$(tput setaf 0)"
 		#RED="$(tput setaf 1)"
 		GREEN="$(tput setaf 2)"
-		YELLOW="$(tput setaf 3)"
-		#BLUE="$(tput setaf 4)"
+		#YELLOW="$(tput setaf 3)"
+		BLUE="$(tput setaf 4)"
 		#MAGENTA="$(tput setaf 5)"
 		#CYAN="$(tput setaf 6)"
 		#WHITE="$(tput setaf 7)"
@@ -22,7 +22,7 @@ fi
 
 help() {
 	echo "Usage: dict [word]"
-	echo "Translate the given word(s) with dict.leo.org [${GREEN}English${NORMAL} -- ${YELLOW}Deutsch${NORMAL}]"
+	echo "Translate the given word(s) with dict.leo.org [${GREEN}English${NORMAL} -- ${BLUE}Deutsch${NORMAL}]"
 	exit 1
 }
 
@@ -50,5 +50,5 @@ curl -s "https://dict.leo.org/?search=$1" \
 	| sed ':a;N;$!ba;s/i\n/ /g' \
 	| sed ':a;N;$!ba;s/^\(.*\)\n$/\1/g' \
 	| sed "s/ / /g" | sed "s/ / /g" | sed "s/ [ ]*/ /g" | sed "s/ ~\([gbn]\)~ /~\1~ /g" \
-	| sed "s/~g~/$GREEN/g" | sed "s/~b~/$YELLOW/g" | sed "s/~n~/$NORMAL/g"
+	| sed "s/~g~/$GREEN/g" | sed "s/~b~/$BLUE/g" | sed "s/~n~/$NORMAL/g"
 	# Note that there are two different kinds of spaces to replace!

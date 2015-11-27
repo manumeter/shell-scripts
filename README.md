@@ -27,6 +27,16 @@
     Usage: dict [word]
     Translate the given word(s) with dict.leo.org [English -- Deutsch]
 
+## file-crypt --help
+    Usage: file-crypt file
+    Use tar and gpg to encrypt a file or directory
+    See also: file-uncrypt
+
+## file-uncrypt --help
+    Usage: file-uncrypt file
+    Use tar and gpg to uncrypt a file
+    See also: file-crypt
+
 ## firefox-sleep --help
     Usage: firefox-sleep
     Suspend all Firefox (and plugin) processes
