@@ -28,7 +28,7 @@ help() {
 
 [ "$1" == "--help" ] && help
 
-wget -q -O- "https://dict.leo.org/?search=$1" \
+curl -s "https://dict.leo.org/?search=$1" \
 	| grep -iA 1 "<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"[a-z]*\">.*" \
 	| sed ':a;N;$!ba;s/\(<td[^>]*>\)\n/\1/g' \
 	| sed ':a;N;$!ba;s/\n\([^<]*<\/td>\)/\1/g' \
