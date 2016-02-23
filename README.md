@@ -47,6 +47,10 @@
     Wake up all Firefox (and plugin) processes
     See also: firefox-sleep
 
+## ipcalc --help
+    Usage: ipcalc [HHHHHHHH | HH.H.HH.H | DDDDDDDDDDDD | DDD.DD.D.DDD]
+    Convert IPv4-Adresses HEX <--> DEC
+
 ## mkdeb-depends --help
     Usage: mkdeb-depends name version depends [file.deb]
 
