@@ -79,6 +79,13 @@
     name is specified, a default lock will be used.
     See also: mutex-lock
 
+## ssh-unlock-disk --help
+    Usage: ssh-unlock-disk [ssh-options] hostname/ip
+    
+    Use this script to send a password through ssh to unlock luks encrypted disks
+    (in initrds). It will use its own known_hosts file since the initrd's all have
+    a different identity than the actual host (uses dropbear instead of openssh).
+
 ## thunderbird-sleep --help
     Usage: thunderbird-sleep
     Suspend all thunderbird processes

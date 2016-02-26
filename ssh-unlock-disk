@@ -1,0 +1,19 @@
+#!/bin/bash
+
+help() {
+	echo "Usage: ssh-unlock-disk [ssh-options] hostname/ip"
+	echo
+	echo "Use this script to send a password through ssh to unlock luks encrypted disks"
+	echo "(in initrds). It will use its own known_hosts file since the initrd's all have"
+	echo "a different identity than the actual host (uses dropbear instead of openssh)."
+	echo
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+[ -z "$1" ] && help
+
+for host; do true; done
+mkdir -p ~/.ssh/initrd/
+
+ssh -o UserKnownHostsFile=~/.ssh/initrd/known_hosts -l root -t $@ "/scripts/local-top/cryptroot; echo > /lib/cryptsetup/passfifo"
