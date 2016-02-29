@@ -13,7 +13,5 @@ help() {
 [ "$1" == "--help" ] && help
 [ -z "$1" ] && help
 
-for host; do true; done
 mkdir -p ~/.ssh/initrd/
-
 ssh -o UserKnownHostsFile=~/.ssh/initrd/known_hosts -l root -t $@ "/scripts/local-top/cryptroot; echo > /lib/cryptsetup/passfifo"
