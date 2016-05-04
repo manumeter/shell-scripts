@@ -1,0 +1,12 @@
+#!/bin/bash
+
+help() {
+	echo "Usage: host2ip dns-name"
+	echo "Use host to convert dns-name to IP address"
+	echo
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+
+host $1 |grep "has address" |sort -R |head -1 |cut -d" " -f4

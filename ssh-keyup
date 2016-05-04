@@ -1,0 +1,16 @@
+#!/bin/bash
+
+help() {
+	echo "Usage: ssh-keyup hostname"
+	echo "Update ssh-key of given hostname and ip address in ~/.ssh/known_hosts"
+	echo
+	exit 1
+}
+
+[ "$1" == "--help" ] && help
+
+ssh-keygen -R $1 -f ~/.ssh/known_hosts
+ssh-keyscan -t rsa $1 >> ~/.ssh/known_hosts
+
+ssh-keygen -R $(host2ip $1) -f ~/.ssh/known_hosts
+ssh-keyscan -t rsa $(host2ip $1) >> ~/.ssh/known_hosts

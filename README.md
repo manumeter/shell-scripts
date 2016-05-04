@@ -47,6 +47,10 @@
     Wake up all Firefox (and plugin) processes
     See also: firefox-sleep
 
+## host2ip --help
+    Usage: host2ip dns-name
+    Use host to convert dns-name to IP address
+
 ## ipcalc --help
     Usage: ipcalc [HHHHHHHH | HH.H.HH.H | DDDDDDDDDDDD | DDD.DD.D.DDD]
     Convert IPv4-Adresses HEX <--> DEC
@@ -85,6 +89,10 @@
     Use this script to send a password through ssh to unlock luks encrypted disks
     (in initrds). It will use its own known_hosts file since the initrd's all have
     a different identity than the actual host (uses dropbear instead of openssh).
+
+## ssh-keyup --help
+    Usage: ssh-keyup hostname
+	Update ssh-key of given hostname and ip address in ~/.ssh/known_hosts
 
 ## thunderbird-sleep --help
     Usage: thunderbird-sleep
