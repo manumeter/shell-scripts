@@ -46,7 +46,11 @@ curl -s "https://dict.leo.org/?search=$1" \
 	| sed "s/<sup>\([^<]*\)<\/sup>/\[\1\]/g" \
 	| sed "s/<sub>\([^<]*\)<\/sub>/\[\1\]/g" \
 	| sed "s/<i>\([^<]*\)<\/i>/\[\1\]/g" \
+	| sed "s/<t>\([^<]*\)<\/t>/\[\1\]/g" \
 	| sed "s/<small>\([^<]*\)<\/small>/\1/g" \
+	| sed "s/\[\[/\[/g" | sed "s/\]\]/\]/g" \
+	| sed "s/<small>\([^<]*\)<\/small>/\1/g" \
+	| sed "s/<[^>]*>//g" \
 	| sed ':a;N;$!ba;s/i\n/ /g' \
 	| sed ':a;N;$!ba;s/^\(.*\)\n$/\1/g' \
 	| sed "s/ / /g" | sed "s/ / /g" | sed "s/ [ ]*/ /g" | sed "s/ ~\([gbn]\)~ /~\1~ /g" \
