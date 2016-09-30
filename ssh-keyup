@@ -12,5 +12,5 @@ help() {
 ssh-keygen -R $1 -f ~/.ssh/known_hosts
 ssh-keyscan -t rsa $1 >> ~/.ssh/known_hosts
 
-ssh-keygen -R $(host2ip $1) -f ~/.ssh/known_hosts
-ssh-keyscan -t rsa $(host2ip $1) >> ~/.ssh/known_hosts
+ssh-keygen -R $($(dirname "$0")/host2ip $1) -f ~/.ssh/known_hosts
+ssh-keyscan -t rsa $($(dirname "$0")/host2ip $1) >> ~/.ssh/known_hosts
