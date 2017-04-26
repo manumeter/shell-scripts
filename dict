@@ -14,8 +14,8 @@ else:
 
 if len(sys.argv) == 1 or sys.argv[1] == '--help':
 	print >> sys.stderr, 'Usage: dict "word"'
+	print >> sys.stderr, 'Translate the given word(s) with dict.leo.org [' + green + 'English' + normal + ' -- ' + blue + 'Deutsch' + normal + ']'
 	print >> sys.stderr
-	print >> sys.stderr, '  Call https://dict.leo.org/englisch-deutsch/<word> and display the result in a user-friendly way.'
 	sys.exit(1)
 
 url = 'https://dict.leo.org/englisch-deutsch/' + sys.argv[1];

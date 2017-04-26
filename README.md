@@ -23,8 +23,26 @@
         rand()      Random number between zero and one
         srand(x)    Random number starting at x
 
+## create-deb-depends --help
+    Usage: create-deb-depends name version depends [file.deb]
+
+    Create a deb package for Debian / Ubuntu only containing dependency
+    information. This helps recognizing relationship of packages and
+    installed software. It also avoids accidental uninstalls.
+
+    Examples: 
+
+        create-deb-depends mutt-dependencies 1.3.17-1 "libc6 (>= 2.2.1), exim | mail-transport-agent" test.deb
+        create-deb-depends config5-dependencies 0.1 "perl-modules, libtemplate-perl, lsb-release, curl, udev"
+
+## create-repo
+    Usage: ./repo.sh path
+
+## deb-sign
+    Usage: ./sign.sh package1.deb [package2.deb [...]]
+
 ## dict --help
-    Usage: dict [word]
+    Usage: dict "word"
     Translate the given word(s) with dict.leo.org [English -- Deutsch]
 
 ## file-crypt --help
@@ -54,18 +72,6 @@
 ## ipcalc --help
     Usage: ipcalc [HHHHHHHH | HH.H.HH.H | DDDDDDDDDDDD | DDD.DD.D.DDD]
     Convert IPv4-Adresses HEX <--> DEC
-
-## mkdeb-depends --help
-    Usage: mkdeb-depends name version depends [file.deb]
-
-    Create a deb package for Debian / Ubuntu only containing dependency
-    information. This helps recognizing relationship of packages and
-    installed software. It also avoids accidental uninstalls.
-
-    Examples: 
-
-        mkdeb-depends mutt-dependencies 1.3.17-1 "libc6 (>= 2.2.1), exim | mail-transport-agent" test.deb
-        mkdeb-depends config5-dependencies 0.1 "perl-modules, libtemplate-perl, lsb-release, curl, udev"
 
 ## mp3-vbrfix --help
     Usage: mp3-vbrfix [file]
