@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Check requirements
+command -v apt-ftparchive >/dev/null 2>&1 || { echo >&2 'To start this script, apt-ftparchive is required!'; exit 1; }
+gpg --list-keys "signing key" >/dev/null 2>&1 || { echo >&2 'To start this script, the gpg key "signing key" is required!'; exit 1; }
+[ -z "$1" ] && { echo >&2 'Usage: ./repo.sh path'; exit 1; }
+
+# Create repo
+(
+	cd $1
+	apt-ftparchive packages . > Packages
+	apt-ftparchive release . > Release
+	gpg --default-key "isginf signing key" --digest-algo SHA512 --clearsign -o InRelease Release
+)

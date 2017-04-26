@@ -1,58 +1,42 @@
-#!/bin/bash
+#!/usr/bin/python
 
-if [ -t 1 ]
-then
-	COLORS="$(tput colors)"
-	if test -n "$COLORS" && test $COLORS -ge 8
-	then
-		#BOLD="$(tput bold)"
-		#UNDERLINE="$(tput smul)"
-		#STANDOUT="$(tput smso)"
-		NORMAL="$(tput sgr0)"
-		#BLACK="$(tput setaf 0)"
-		#RED="$(tput setaf 1)"
-		GREEN="$(tput setaf 2)"
-		#YELLOW="$(tput setaf 3)"
-		BLUE="$(tput setaf 4)"
-		#MAGENTA="$(tput setaf 5)"
-		#CYAN="$(tput setaf 6)"
-		#WHITE="$(tput setaf 7)"
-	fi
-fi
+from lxml import html
+import sys, requests
 
-help() {
-	echo "Usage: dict [word]"
-	echo "Translate the given word(s) with dict.leo.org [${GREEN}English${NORMAL} -- ${BLUE}Deutsch${NORMAL}]"
-	exit 1
-}
+if sys.stdout.isatty():
+	normal = '\033[00m'
+	green = '\033[92m'
+	blue = '\033[94m'
+else:
+	normal = ''
+	green = ''
+	blue = ''
 
-[ "$1" == "--help" ] && help
+if len(sys.argv) == 1 or sys.argv[1] == '--help':
+	print >> sys.stderr, 'Usage: dict "word"'
+	print >> sys.stderr
+	print >> sys.stderr, '  Call https://dict.leo.org/englisch-deutsch/<word> and display the result in a user-friendly way.'
+	sys.exit(1)
 
-curl -s "https://dict.leo.org/?search=$1" \
-	| grep -iA 1 "<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"[a-z]*\">.*" \
-	| sed ':a;N;$!ba;s/\(<td[^>]*>\)\n/\1/g' \
-	| sed ':a;N;$!ba;s/\n\([^<]*<\/td>\)/\1/g' \
-	| sed "s/<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"en\">\(.*\)/~g~\1~n~ --i/g" \
-	| sed "s/<td[^>]*data-dz-attr=\"relink\"[^>]*lang=\"de\">\(.*\)/~b~\1~n~/g" \
-	| sed ':a;N;$!ba;s/--\n//g' \
-	| sed ':a;N;$!ba;s/\t/ /g' \
-	| sed ':a;N;$!ba;s/<\/*tbody[^>]*>\n*//g' \
-	| sed ':a;N;$!ba;s/<\/*td[^>]*>\n*//g' \
-	| sed ':a;N;$!ba;s/<\/*tr[^>]*>\n*//g' \
-	| sed ':a;N;$!ba;s/<\/*a[^>]*>\n*//g' \
-	| sed ':a;N;$!ba;s/<\/*span[^>]*>\n*//g' \
-	| sed ':a;N;$!ba;s/<\/*br[^>]*>/ /g' \
-	| sed "s/<b>\([^<]*\)<\/b>/\1/g" \
-	| sed "s/<sup>\([^<]*\)<\/sup>/\[\1\]/g" \
-	| sed "s/<sub>\([^<]*\)<\/sub>/\[\1\]/g" \
-	| sed "s/<i>\([^<]*\)<\/i>/\[\1\]/g" \
-	| sed "s/<t>\([^<]*\)<\/t>/\[\1\]/g" \
-	| sed "s/<small>\([^<]*\)<\/small>/\1/g" \
-	| sed "s/\[\[/\[/g" | sed "s/\]\]/\]/g" \
-	| sed "s/<small>\([^<]*\)<\/small>/\1/g" \
-	| sed "s/<[^>]*>//g" \
-	| sed ':a;N;$!ba;s/i\n/ /g' \
-	| sed ':a;N;$!ba;s/^\(.*\)\n$/\1/g' \
-	| sed "s/ / /g" | sed "s/ / /g" | sed "s/ [ ]*/ /g" | sed "s/ ~\([gbn]\)~ /~\1~ /g" \
-	| sed "s/~g~/$GREEN/g" | sed "s/~b~/$BLUE/g" | sed "s/~n~/$NORMAL/g"
-	# Note that there are two different kinds of spaces to replace!
+url = 'https://dict.leo.org/englisch-deutsch/' + sys.argv[1];
+
+r = requests.get(url)
+if r.status_code == 200:
+	content = html.fromstring(r.content)
+	for section in content.xpath('//*[@data-dz-role="section"]/@data-dz-name'):
+		print
+		print content.xpath('//*[@data-dz-name="' + section + '"]//h2/text()')[0]
+		print
+		for entry in content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-ui="dictentry"]/@data-dz-rel-uid'):
+			en = ' '.join(content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-rel-uid="' + entry + '"]//*[@lang="en"]//text()'))
+			de = ' '.join(content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-rel-uid="' + entry + '"]//*[@lang="de"]//text()'))
+			en = ' '.join(en.split())
+			de = ' '.join(de.split())
+			print '  ' + green + en + normal + ' ' * (35 - len(en)) + ' -- ' + blue + de + normal
+	print
+elif r.status_code == 404:
+	print >> sys.stderr, 'Error: ' + sys.argv[1] + ' not found'
+	sys.exit(1)
+else:
+	print >> sys.stderr, 'Error: dict.leo.org returned status code ' + str(r.status_code)
+	sys.exit(1)
