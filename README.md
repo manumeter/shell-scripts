@@ -38,6 +38,19 @@
 ## create-repo
     Usage: ./repo.sh path
 
+## de --help
+    usage: de [-h] {ru,fr,en,pl,pt,ch,it,es} word
+    
+    Translate a word from or to german with dict.leo.org.
+    
+    positional arguments:
+      {ru,fr,en,pl,pt,ch,it,es}
+                            language to translate from or to german
+      word                  word(s) to translate
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+
 ## deb-sign
     Usage: ./sign.sh package1.deb [package2.deb [...]]
 
