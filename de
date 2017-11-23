@@ -42,16 +42,13 @@ r = requests.get(url)
 if r.status_code == 200:
 	content = html.fromstring(r.content)
 	for section in content.xpath('//*[@data-dz-role="section"]/@data-dz-name'):
-		print
 		print content.xpath('//*[@data-dz-name="' + section + '"]//h2/text()')[0].encode('utf-8')
-		print
 		for entry in content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-ui="dictentry"]/@data-dz-rel-uid'):
 			ol = ' '.join(content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-rel-uid="' + entry + '"]//*[@lang="' + args.lang + '"]//text()'))
 			de = ' '.join(content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-rel-uid="' + entry + '"]//*[@lang="de"]//text()'))
 			ol = ' '.join(ol.split())
 			de = ' '.join(de.split())
 			print '  ' + green + ol.encode('utf-8') + normal + ' ' * (30 - len(ol)) + ' -- ' + blue + de.encode('utf-8') + normal
-	print
 elif r.status_code == 404:
 	print >> sys.stderr, 'Error: ' + args.word + ' not found'
 	sys.exit(1)
