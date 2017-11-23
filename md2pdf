@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Check requirements
+command -v pandoc >/dev/null 2>&1 || { echo >&2 'Pandoc not found! Try "dnf/apt install pandoc texlive texlive-base texlive-bibtex-extra texlive-lang-german texlive-latex-extra texlive-pictures texlive-pictures-doc".'; exit 1; }
+[ -z "$1" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ] && { echo >&2 "Usage: $0 /path/to/file.md [/path/to/file.pdf]"; exit 1; }
+
+pdf="$(echo $1 |sed 's/^\(.*\)\.md$/\1.pdf/')"
+[ -z "$2" ] || pdf="$2"
+
+pandoc "$1" -s -Vlang=de-CH -o "$pdf"

@@ -86,6 +86,9 @@
     Usage: ipcalc [HHHHHHHH | HH.H.HH.H | DDDDDDDDDDDD | DDD.DD.D.DDD]
     Convert IPv4-Adresses HEX <--> DEC
 
+## md2pdf --help
+    Usage: ./md2pdf /path/to/file.md [/path/to/file.pdf]
+
 ## mp3-vbrfix --help
     Usage: mp3-vbrfix [file]
     Use vbrfix to fix wrong vbr header (e.g. song length) in all .mp3 files (recursively)
