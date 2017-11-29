@@ -2,9 +2,21 @@
 
 # Check requirements
 command -v pandoc >/dev/null 2>&1 || { echo >&2 'Pandoc not found! Try "dnf/apt install pandoc texlive texlive-base texlive-bibtex-extra texlive-lang-german texlive-latex-extra texlive-pictures texlive-pictures-doc".'; exit 1; }
+command -v gpp >/dev/null 2>&1 || { echo >&2 'GPP not found! Try "dnf/apt install gpp".'; exit 1; }
 [ -z "$1" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ] && { echo >&2 "Usage: $0 /path/to/file.md [/path/to/file.pdf]"; exit 1; }
 
 pdf="$(echo $1 |sed 's/^\(.*\)\.md$/\1.pdf/')"
 [ -z "$2" ] || pdf="$2"
 
-pandoc "$1" -s -Vlang=de-CH -o "$pdf"
+gpp -U "<#" ">" "\B" "|" ">" "<" ">" "#" "" \
+	-DDAY="$(date +%d)" \
+	-DMONTH="$(date +%m)" \
+	-DYEAR="$(date +%Y)" \
+	-DHOUR="$(date +%H)" \
+	-DMINUTE="$(date +%H)" \
+	-DSECOND="$(date +%S)" \
+	-DFILE="$(basename "$pdf")" \
+"$1" | pandoc -f markdown -t latex -s \
+	-Vlang=de-CH \
+	-Vpapersize=a4 \
+-o "$pdf"
