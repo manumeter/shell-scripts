@@ -27,5 +27,10 @@ for f in $FILES; do
 done
 
 echo
-eval rsync --progress -ze "'"$SSH"'"$SOURCES "'"$LOCAL_DEST"'"
-[ $? -eq 0 ] && echo "LAST_RUN="""$STAMP"""" >"$0.date"
+
+if [ -z $SOURCES ]; then
+  echo "Nothing to copy ..."
+else
+  eval rsync --progress -ze "'"$SSH"'"$SOURCES "'"$LOCAL_DEST"'"
+  [ $? -eq 0 ] && echo "LAST_RUN="""$STAMP"""" >"$0.date"
+fi
