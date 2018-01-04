@@ -5,11 +5,11 @@ REMOTE_HOST="username@remote.example.com"
 REMOTE_SRC="/path/to/files"
 LOCAL_DEST="/local/path"
 
-source "$0.date"
+source "$0.date" 2>/dev/null
 [ -z "$LAST_RUN" ] && LAST_RUN="0000-01-01 00:00:00"
 
 FILES="$($SSH $REMOTE_HOST find "'"$REMOTE_SRC"'" -newermt "'"$LAST_RUN"'" -type f -print 2>/dev/null)"
-STAMP="$(date +%Y-%m-%d\ %H-%M-%S)"
+STAMP="$(date +%Y-%m-%d\ %H:%M:%S)"
 IFS=$'\n'
 
 echo "Which file should I copy [y/n on each]?"
