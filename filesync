@@ -32,5 +32,5 @@ if [ -z $SOURCES ]; then
   echo "Nothing to copy ..."
 else
   eval rsync --progress -ze "'"$SSH"'"$SOURCES "'"$LOCAL_DEST"'"
-  [ $? -eq 0 ] && echo "LAST_RUN="""$STAMP"""" >"$0.date"
+  [ $? -eq 0 ] && echo 'LAST_RUN="'"$STAMP"'"' >"$0.date"
 fi
