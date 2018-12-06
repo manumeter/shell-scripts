@@ -67,6 +67,7 @@ delete=0
 host="${1#*@}"
 
 # Determine IP(s)
+ip=""
 [[ $host =~ [a-f0-9:]*:[a-f0-9:]* ]] || [[ $host =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]] && ip="$host"
 [ -z "$ip" ] && ip="$(host -- $host |grep -e 'has[ IPv6]* address' |rev |cut -d' ' -f1 |rev)"
 [ -z "$ip" ] && { echo >&1 "Could not determine IP from $host!"; exit 1; }
