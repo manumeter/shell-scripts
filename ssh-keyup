@@ -61,7 +61,7 @@ command -v ssh-keyscan >/dev/null 2>&1 || { echo >&2 'Command ssh-keyscan not fo
 
 delete=0
 [ "$1" = "-d" ] || [ "$1" = "--delete" ] && { shift; delete=1; }
-[ -z "$1" ] && { echo >&2 'No host or ip given!'; exit 1; }
+[ -z "$1" ] && { echo >&2 'No host or IP given!'; exit 1; }
 
 # Remove user part
 host="${1#*@}"
