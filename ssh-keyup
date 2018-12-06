@@ -1,16 +1,93 @@
 #!/bin/bash
 
-help() {
-	echo "Usage: ssh-keyup hostname"
-	echo "Update ssh-key of given hostname and ip address in ~/.ssh/known_hosts"
-	echo
-	exit 1
+#
+# Help
+#
+
+synopsis="$0 [-h|--help] [-m|--man] [-d|--delete] [user@](host|host.domain|ip)"
+
+[ "$1" = "-h" ] || [ "$1" = "--help" ] && { echo >&2 "Usage: $synopsis"; exit 1; }
+if  [ "$1" = "-m" ] || [ "$1" = "--man" ]; then
+cat >&2 <<__END__
+Usage:
+  $synopsis
+
+Description:
+  This script uses ssh-keygen to remove entries from ~/.ssh/known_hosts
+  and ssh-keyscan to retrieve current keys and write them back to
+  ~/.ssh/known_hosts.
+
+  The script tries to resolve this three identities from the given name:
+  - all IP (v4 and v6) addresses (DNS A and AAAA records)
+  - all fully qualified host names (DNS PTR records)
+  - the unqualified host names (from the above)
+ 
+  It will then remove/update all entries from this list. But before
+  doing anything, it checks if the host is reachable on port 22 (except
+  if -d or --delete is used).
+
+  The user part of the string will always be ignored (this is only for
+  convenience to allow copy-paste from the ssh command).
+
+Options:
+  -h, --help
+    Print usage on one line and exit.
+  -m, --man
+    Print this detailed help and exit.
+  -d, --delete
+    Skip check if the host is running SSH and only delete all entries
+    in known_hosts instead of replacing them by new ones.
+
+Known Issues:
+  Only works if SSH is running on port 22 and the logic may fail in
+  environments where conflicting unqualified host names exist.
+__END__
+exit 1
+fi
+
+#
+# Checks
+#
+
+command -v host >/dev/null 2>&1 || { echo >&2 'Command host not found! Try: dnf/apt install bind-utils/host.'; exit 1; }
+command -v nc >/dev/null 2>&1 || { echo >&2 'Command nc not found! Try: dnf/apt install nc/netcat.'; exit 1; }
+command -v ssh-keygen >/dev/null 2>&1 || { echo >&2 'Command ssh-keygen not found! Try: dnf/apt install openssh-client[s].'; exit 1; }
+command -v ssh-keyscan >/dev/null 2>&1 || { echo >&2 'Command ssh-keyscan not found! Try: dnf/apt install openssh-client[s].'; exit 1; }
+[ -e ~/.ssh/known_hosts ] || { echo >&2 'File ~/.ssh/known_hosts not found! Nothing to do...'; exit 1; }
+
+#
+# Prepare
+#
+
+delete=0
+[ "$1" = "-d" ] || [ "$1" = "--delete" ] && { shift; delete=1; }
+[ -z "$1" ] && { echo >&2 'No host or ip given!'; exit 1; }
+
+# Remove user part
+host="${1#*@}"
+
+# Determine IP(s)
+[[ $host =~ [a-f0-9:]*:[a-f0-9:]* ]] || [[ $host =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]] && ip="$host"
+[ -z "$ip" ] && ip="$(host -- $host |grep -e 'has[ IPv6]* address' |rev |cut -d' ' -f1 |rev)"
+[ -z "$ip" ] && { echo >&1 "Could not determine IP from $host!"; exit 1; }
+
+# Determine fully qualified host name
+fqhn="$host"
+[ "$host" = "$ip" ] || [ "$host" = "${host%%.*}" ] && fqhn="$(host -- $ip |grep 'domain name pointer' |rev |cut -d" " -f1 |rev)"
+[ "$host" = "$ip" ] || [ "$host" = "${host%%.*}" ] && [ "$host" = "$fqhn" ] && { echo >&1 "Could not determine fully qualified host name from $host!"; exit 1; }
+[ "${fqhn: -1}" = "." ] && fqhn="${fqhn::-1}"
+
+#
+# Process
+#
+
+delup() {
+    [ 0 -eq $2 ] && { nc -zw3 $1 22 || return; }
+    ssh-keygen -R $1 -f ~/.ssh/known_hosts
+    [ 0 -eq $2 ] && ssh-keyscan $1 >> ~/.ssh/known_hosts
 }
 
-[ "$1" == "--help" ] && help
-
-ssh-keygen -R $1 -f ~/.ssh/known_hosts
-ssh-keyscan -t rsa $1 >> ~/.ssh/known_hosts
-
-ssh-keygen -R $($(dirname "$0")/host2ip $1) -f ~/.ssh/known_hosts
-ssh-keyscan -t rsa $($(dirname "$0")/host2ip $1) >> ~/.ssh/known_hosts
+for h in "$ip"; do delup $h $delete; done
+for h in "$fqhn"; do delup $h $delete; done
+for h in "$fqhn"; do delup ${h%%.*} $delete; done
+exit 0
