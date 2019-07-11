@@ -14,4 +14,4 @@ help() {
 [ -z "$1" ] && help
 
 mkdir -p ~/.ssh/initrd/
-ssh -o UserKnownHostsFile=~/.ssh/initrd/known_hosts -l root -t $@ "/scripts/local-top/cryptroot; echo > /lib/cryptsetup/passfifo"
+ssh -o UserKnownHostsFile=~/.ssh/initrd/known_hosts -l root -t $@ '/lib/cryptsetup/askpass "Please unlock root disk: " > /lib/cryptsetup/passfifo'
