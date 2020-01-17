@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from lxml import html
 import argparse, sys, requests
@@ -36,22 +36,22 @@ args = parser.parse_args()
 
 # call
 
-url = 'https://dict.leo.org/' + langs[args.lang] + '-deutsch/' + args.word;
+url = 'https://dict.leo.org/%s-deutsch/%s' % (langs[args.lang], args.word);
 
 r = requests.get(url)
 if r.status_code == 200:
 	content = html.fromstring(r.content)
 	for section in content.xpath('//*[@data-dz-role="section"]/@data-dz-name'):
-		print content.xpath('//*[@data-dz-name="' + section + '"]//h2/text()')[0].encode('utf-8')
-		for entry in content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-ui="dictentry"]/@data-dz-rel-uid'):
-			ol = ' '.join(content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-rel-uid="' + entry + '"]//*[@lang="' + args.lang + '"]//text()'))
-			de = ' '.join(content.xpath('//*[@data-dz-name="' + section + '"]//*[@data-dz-rel-uid="' + entry + '"]//*[@lang="de"]//text()'))
+		print(content.xpath('//*[@data-dz-name="%s"]//h2/text()' % section)[0])
+		for entry in content.xpath('//*[@data-dz-name="%s"]//*[@data-dz-ui="dictentry"]/@data-dz-rel-uid' % section):
+			ol = ' '.join(content.xpath('//*[@data-dz-name="%s"]//*[@data-dz-rel-uid="%s"]//*[@lang="%s"]//text()' % (section, entry, args.lang)))
+			de = ' '.join(content.xpath('//*[@data-dz-name="%s"]//*[@data-dz-rel-uid="%s"]//*[@lang="de"]//text()' % (section, entry)))
 			ol = ' '.join(ol.split())
 			de = ' '.join(de.split())
-			print '  ' + green + ol.encode('utf-8') + normal + ' ' * (30 - len(ol)) + ' -- ' + blue + de.encode('utf-8') + normal
+			print('  %s%s%s%s -- %s%s%s' % (green, ol, normal, ' ' * (30 - len(ol)), blue, de, normal))
 elif r.status_code == 404:
-	print >> sys.stderr, 'Error: ' + args.word + ' not found'
+	print('Error: %s not found' % args.word, file=sys.stderr)
 	sys.exit(1)
 else:
-	print >> sys.stderr, 'Error: dict.leo.org returned status code ' + str(r.status_code)
+	print('Error: dict.leo.org returned status code %i' % r.status_code, file=sys.stderr)
 	sys.exit(1)
