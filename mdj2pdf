@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+
+import argparse, os, sys, re, yaml, jinja2, subprocess, datetime
+
+# Arguments
+
+desc = '''
+Convert a jinja2 templated markdown file into a PDF. Use the YAML metadata block
+(https://pandoc.org/MANUAL.html#extension-yaml_metadata_block) to add variables
+for templating.
+'''
+
+parser = argparse.ArgumentParser(description=desc)
+parser.add_argument('file', help='jinja2 templated markdown file with yaml metadata block')
+args = parser.parse_args()
+
+# Read file
+
+try:
+  with open(args.file) as f:
+    md = f.read()
+except IOError as e:
+  print(str(e), file=sys.stderr)
+  exit(1)
+
+# Parse YAML
+
+now = datetime.datetime.now()
+
+data = {
+    'file': {
+        'path': os.path.abspath(os.path.dirname(args.file)),
+        'md': os.path.basename(args.file),
+        'pdf': '%s.pdf' % os.path.splitext(os.path.basename(args.file))[0],
+    },
+    'now': {
+        'year': now.year,
+        'month': now.month,
+        'day': now.day,
+        'hour': now.hour,
+        'minute': now.minute,
+        'second': now.second,
+    }
+}
+
+for yml in re.findall(r'(\A|^$\n)^---$\n(.*?)^(---|\.\.\.)$', md, re.MULTILINE+re.DOTALL):
+    try:
+        data.update(yaml.safe_load(yml[1]))
+    except Exception as e:
+        print(str(e), file=sys.stderr)
+        exit(1)
+
+# Parse Jinja2
+
+try:
+    j2 = jinja2.Environment(loader=jinja2.BaseLoader, undefined=jinja2.StrictUndefined, trim_blocks=True)
+    doc = j2.from_string(md).render(data)
+except Exception as e:
+    print(str(e), file=sys.stderr)
+    exit(1)
+
+# Pass to pandoc
+
+try:
+    with subprocess.Popen(['pandoc', '-f', 'markdown', '-t', 'latex', '-s', '-o', data['file']['pdf']], stdin=subprocess.PIPE) as p:
+        p.stdin.write(str.encode(doc))
+except Exception as e:
+    print(str(e), file=sys.stderr)
+    exit(1)
+
+exit(p.returncode)
