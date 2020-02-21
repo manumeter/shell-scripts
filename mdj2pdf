@@ -53,10 +53,12 @@ for yml in re.findall(r'(\A|^$\n)^---$\n(.*?)^(---|\.\.\.)$', md, re.MULTILINE+r
 # Parse Jinja2
 
 try:
-    j2 = jinja2.Environment(loader=jinja2.BaseLoader, undefined=jinja2.StrictUndefined, trim_blocks=True)
-    doc = j2.from_string(md).render(data)
+    j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(data['file']['path']), undefined=jinja2.StrictUndefined, trim_blocks=True)
+    # read file again (instead of string in var "md") to have a better trace on errors in jinja2
+    doc = j2.get_template(data['file']['md']).render(data)
 except Exception as e:
-    print(str(e), file=sys.stderr)
+    import traceback
+    print('%s:\n%s' % (str(e), traceback.format_exc()), file=sys.stderr)
     exit(1)
 
 # Pass to pandoc
