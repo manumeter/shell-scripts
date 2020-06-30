@@ -91,4 +91,5 @@ delup() {
 for h in "$ip"; do delup $h $delete; done
 for h in "$fqhn"; do delup $h $delete; done
 for h in "$fqhn"; do delup ${h%%.*} $delete; done
-exit 0
+
+[ 0 -eq $delete ] && ssh $1
