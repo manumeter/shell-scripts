@@ -64,7 +64,25 @@ except Exception as e:
 # Pass to pandoc
 
 try:
-    with subprocess.Popen(['pandoc', '-f', 'markdown', '-t', 'latex', '-s', '-o', data['file']['pdf']], stdin=subprocess.PIPE) as p:
+    with open('/tmp/pandoc-preamble.tex', 'w') as fp:
+        fp.write('''
+            \\usepackage{fontspec}
+            \\directlua{luaotfload.add_fallback
+               ("emojifallback",
+                {
+                  "NotoColorEmoji:mode=harf;"
+                }
+               )}
+            
+            \\setmainfont{lmroman10-regular}[
+              Extension      = .otf,
+              BoldFont       = lmroman10-bold,
+              ItalicFont     = lmroman10-italic,
+              BoldItalicFont = lmroman10-bolditalic,
+              RawFeature={fallback=emojifallback}
+            ]
+        ''')
+    with subprocess.Popen(['pandoc', '-f', 'markdown', '-t', 'latex', '--pdf-engine=lualatex', '-H', '/tmp/pandoc-preamble.tex', '-s', '-o', data['file']['pdf']], stdin=subprocess.PIPE) as p:
         p.stdin.write(str.encode(doc))
 except Exception as e:
     print(str(e), file=sys.stderr)
